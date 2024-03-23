@@ -316,3 +316,53 @@ function restartGame() {
 function reload() {
     location.reload();
 }
+
+// Add event listeners for touch events
+document.addEventListener('touchstart', handleTouchStart, false);        
+document.addEventListener('touchmove', handleTouchMove, false);
+
+let xDown = null;
+let yDown = null;
+
+function handleTouchStart(evt) {
+    xDown = evt.touches[0].clientX;                                      
+    yDown = evt.touches[0].clientY;                                      
+};
+
+function handleTouchMove(evt) {
+    if (!xDown || !yDown) {
+        return;
+    }
+
+    let xUp = evt.touches[0].clientX;                                    
+    let yUp = evt.touches[0].clientY;
+
+    let xDiff = xDown - xUp;
+    let yDiff = yDown - yUp;
+
+    if (Math.abs(xDiff) > Math.abs(yDiff)) { // Most significant.
+        if (xDiff > 0) {
+            // Swipe left
+            slideLeft();
+            setTwo();
+        } else {
+            // Swipe right
+            slideRight();
+            setTwo();
+        }                       
+    } else {
+        if (yDiff > 0) {
+            // Swipe up
+            slideUp();
+            setTwo();
+        } else { 
+            // Swipe down
+            slideDown();
+            setTwo();
+        }                                                                 
+    }
+
+    // Reset values
+    xDown = null;
+    yDown = null;                                             
+};
