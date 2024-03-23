@@ -6,8 +6,12 @@ let message;
 let countdown = 5;
 
 let is2048Exist = false;
-let is4096Exist = false;
-let is8192Exist = false;
+
+document.addEventListener('touchstart', handleTouchStart, false);        
+document.addEventListener('touchmove', handleTouchMove, false);
+
+let xDown = null;
+let yDown = null;
 
 function setGame() {
     board = [
@@ -317,13 +321,6 @@ function reload() {
     location.reload();
 }
 
-// Add event listeners for touch events
-document.addEventListener('touchstart', handleTouchStart, false);        
-document.addEventListener('touchmove', handleTouchMove, false);
-
-let xDown = null;
-let yDown = null;
-
 function handleTouchStart(evt) {
     xDown = evt.touches[0].clientX;                                      
     yDown = evt.touches[0].clientY;                                      
@@ -340,29 +337,129 @@ function handleTouchMove(evt) {
     let xDiff = xDown - xUp;
     let yDiff = yDown - yUp;
 
-    if (Math.abs(xDiff) > Math.abs(yDiff)) { // Most significant.
+    if (Math.abs(xDiff) > Math.abs(yDiff)) { 
         if (xDiff > 0) {
-            // Swipe left
-            slideLeft();
-            setTwo();
+            swipeLeft();
         } else {
-            // Swipe right
-            slideRight();
-            setTwo();
+            swipeRight();
         }                       
     } else {
         if (yDiff > 0) {
-            // Swipe up
-            slideUp();
-            setTwo();
-        } else { 
-            // Swipe down
-            slideDown();
-            setTwo();
+            swipeUp();
+        } else {
+            swipeDown();
         }                                                                 
     }
 
-    // Reset values
     xDown = null;
     yDown = null;                                             
 };
+
+function swipeLeft() {
+    for(let r = 0; r < rows; r++) {
+        let row = board[r];
+        let originalRow = row.slice();
+        row = slide(row);
+        board[r] = row;
+
+        for(let c = 0; c < columns; c++) {
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            let num = board[r][c];
+            updateTile(tile, num);
+
+            if(originalRow[c] !== num && num !== 0) {
+                tile.style.animation = "slide-from-right 0.3s";
+                setTimeout(() => {
+                    tile.style.animation = "";
+                }, 300);
+            }
+        }
+    }
+}
+
+function swipeDown() {
+    for(let c = 0; c < columns; c++) {
+        let col = [board[0][c], board[1][c], board[2][c], board[3][c]];
+        let originalCol = col.slice();
+        col.reverse();
+        col = slide(col);
+        col.reverse();
+
+        let changeIndices = [];
+        for(let r = 0; r < rows; r++) {
+            if(originalCol[r] !== col[r]) {
+                changeIndices.push(r);
+            }
+        }
+
+        for(let r = 0; r < rows; r++) {
+            board[r][c] = col[r];
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            let num = board[r][c];
+            updateTile(tile, num);
+
+            if(changeIndices.includes(r) && num !== 0) {
+                tile.style.animation = "slide-from-top 0.3s";
+
+                setTimeout(() => {
+                    tile.style.animation = "";
+                }, 300);
+            }
+        }
+    }
+}
+
+function swipeRight() {
+    for(let r = 0; r < rows; r++) {
+        let row = board[r];
+        let originalRow = row.slice();
+        row.reverse();
+        row = slide(row);
+        row.reverse();
+        board[r] = row;
+
+        for(let c = 0; c < columns; c++) {
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            let num = board[r][c];
+            updateTile(tile, num);
+
+            if(originalRow[c] !== num && num !== 0) {
+                tile.style.animation = "slide-from-left 0.3s";
+
+                setTimeout(() => {
+                    tile.style.animation = "";
+                }, 300);
+            }
+        }
+    }
+}
+
+function swipeUp() {
+    for(let c = 0; c < columns; c++) {
+        let col = [board[0][c], board[1][c], board[2][c], board[3][c]];
+        let originalCol = col.slice();
+        col = slide(col);
+
+        let changeIndices = [];
+        for(let r = 0; r < rows; r++) {
+            if(originalCol[r] !== col[r]) {
+                changeIndices.push(r);
+            }
+        }
+
+        for(let r = 0; r < rows; r++) {
+            board[r][c] = col[r];
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            let num = board[r][c];
+            updateTile(tile, num);
+
+            if(changeIndices.includes(r) && num !== 0) {
+                tile.style.animation = "slide-from-bottom 0.3s";
+
+                setTimeout(() => {
+                    tile.style.animation = "";
+                }, 300);
+            }
+        }
+    }
+}
