@@ -7,22 +7,16 @@ let countdown = 5;
 
 let is2048Exist = false;
 
-document.addEventListener('touchstart', handleTouchStart, false);        
-document.addEventListener('touchmove', handleTouchMove, false);
-
-let xDown = null;
-let yDown = null;
-
 function setGame() {
     board = [
-        [0,0,0,0],
-        [0,0,0,0],
-        [0,0,0,0],
-        [0,0,0,0]
-    ]; 
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ];
 
-    for(let r=0; r<rows; r++) {
-        for(let c=0; c<columns; c++) {
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
             let tile = document.createElement("div");
 
             tile.id = r.toString() + "-" + c.toString();
@@ -42,10 +36,10 @@ function updateTile(tile, num) {
     tile.innerText = "";
     tile.classList.value = "";
     tile.classList.add("tile");
-    if(num > 0) {
+    if (num > 0) {
         tile.innerText = num.toString();
 
-        if(num <= 4096) {
+        if (num <= 4096) {
             tile.classList.add("x" + num.toString());
         } else {
             tile.classList.add("x8192");
@@ -53,27 +47,27 @@ function updateTile(tile, num) {
     }
 }
 
-window.onload = function() {
+window.onload = function () {
     setGame();
 }
 
 function handleSlide(e) {
     e.preventDefault();
 
-    if(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.code)) {
-        if(e.code == "ArrowLeft") {
+    if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.code)) {
+        if (e.code == "ArrowLeft") {
             slideLeft();
             setTwo();
-        } else if(e.code == "ArrowDown") {
+        } else if (e.code == "ArrowDown") {
             slideDown();
             setTwo();
-        } else if(e.code == "ArrowRight") {
+        } else if (e.code == "ArrowRight") {
             slideRight();
             setTwo();
         } else {
             slideUp();
             setTwo();
-        }        
+        }
     }
 
     document.getElementById("score").textContent = score;
@@ -83,7 +77,7 @@ function handleSlide(e) {
         const messageElement = document.getElementById("message");
         messageElement.style.display = "block";
         messageElement.innerText = `Game Over! You Lost The Game! The Game Will Reload in ${countdown} seconds`;
-    
+
         const countdownInterval = setInterval(() => {
             countdown--;
             if (countdown <= 0) {
@@ -98,41 +92,41 @@ function handleSlide(e) {
 
 document.addEventListener("keydown", handleSlide);
 
-function filterZero(row){
+function filterZero(row) {
     return row.filter(num => num != 0);
 }
 
 function slide(row) {
     row = filterZero(row);
-    
-    for(let i=0; i < row.length - 1; i++) {
-        if(row[i] == row[i+1]) {
+
+    for (let i = 0; i < row.length - 1; i++) {
+        if (row[i] == row[i + 1]) {
             row[i] *= 2;
-            row[i+1] = 0;
+            row[i + 1] = 0;
             score += row[i];
         }
     }
 
     row = filterZero(row);
-    while(row.length < columns) {
+    while (row.length < columns) {
         row.push(0);
     }
     return row;
 }
 
 function slideLeft() {
-    for(let r=0; r<rows; r++){
+    for (let r = 0; r < rows; r++) {
         let row = board[r];
         let originalRow = row.slice();
         row = slide(row);
         board[r] = row;
 
-        for(let c=0; c < columns; c++) {
+        for (let c = 0; c < columns; c++) {
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
 
-            if(originalRow[c] !== num && num !== 0) {
+            if (originalRow[c] !== num && num !== 0) {
                 tile.style.animation = "slide-from-right 0.3s";
                 setTimeout(() => {
                     tile.style.animation = "";
@@ -143,7 +137,7 @@ function slideLeft() {
 }
 
 function slideDown() {
-    for(let c = 0; c < columns; c++) {
+    for (let c = 0; c < columns; c++) {
         let col = [board[0][c], board[1][c], board[2][c], board[3][c]];
         let originalCol = col.slice();
         col.reverse();
@@ -151,19 +145,19 @@ function slideDown() {
         col.reverse();
 
         changeIndices = [];
-        for(let r=0; r<rows; r++) {
-            if(originalCol[r] !== col[r]) {
+        for (let r = 0; r < rows; r++) {
+            if (originalCol[r] !== col[r]) {
                 changeIndices.push(r);
             }
         }
 
-        for(let r=0; r < rows; r++) {
+        for (let r = 0; r < rows; r++) {
             board[r][c] = col[r];
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
 
-            if(changeIndices.includes(r) && num !== 0) {
+            if (changeIndices.includes(r) && num !== 0) {
                 tile.style.animation = "slide-from-top 0.3s";
 
                 setTimeout(() => {
@@ -175,7 +169,7 @@ function slideDown() {
 }
 
 function slideRight() {
-    for(let r=0; r<rows; r++){
+    for (let r = 0; r < rows; r++) {
         let row = board[r];
         let originalRow = row.slice();
         row.reverse();
@@ -183,12 +177,12 @@ function slideRight() {
         row.reverse();
         board[r] = row;
 
-        for(let c=0; c < columns; c++) {
+        for (let c = 0; c < columns; c++) {
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
 
-            if(originalRow[c] !== num && num !== 0) {
+            if (originalRow[c] !== num && num !== 0) {
                 tile.style.animation = "slide-from-left 0.3s";
 
                 setTimeout(() => {
@@ -200,25 +194,25 @@ function slideRight() {
 }
 
 function slideUp() {
-    for(let c = 0; c < columns; c++) {
+    for (let c = 0; c < columns; c++) {
         let col = [board[0][c], board[1][c], board[2][c], board[3][c]];
         let originalCol = col.slice();
         col = slide(col);
 
         let changeIndices = [];
-        for(let r = 0; r < rows; r++){
-            if(originalCol[r] !== col[r]) {
+        for (let r = 0; r < rows; r++) {
+            if (originalCol[r] !== col[r]) {
                 changeIndices.push(r);
             }
         }
 
-        for(let r=0; r < rows; r++) {
+        for (let r = 0; r < rows; r++) {
             board[r][c] = col[r];
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
 
-            if(changeIndices.includes(r) && num !== 0) {
+            if (changeIndices.includes(r) && num !== 0) {
                 tile.style.animation = "slide-from-bottom 0.3s";
 
                 setTimeout(() => {
@@ -229,47 +223,47 @@ function slideUp() {
     }
 }
 
-function hasEmptyTile(){
-	for(let r=0; r<rows; r++){
-		for(let c=0; c<columns; c++){
-			if(board[r][c] == 0){
-				return true;
-			}
-		}
-	}
-	return false;
+function hasEmptyTile() {
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
+            if (board[r][c] == 0) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 
-function setTwo(){
-	if(!hasEmptyTile()){
-		return;
-	}
+function setTwo() {
+    if (!hasEmptyTile()) {
+        return;
+    }
 
-	let found = false;
+    let found = false;
 
-	while(!found){
-		let r = Math.floor(Math.random() * rows);
-		let c = Math.floor(Math.random() * columns);
+    while (!found) {
+        let r = Math.floor(Math.random() * rows);
+        let c = Math.floor(Math.random() * columns);
 
-		if(board[r][c] == 0){
-			board[r][c] = 2;
-			let tile = document.getElementById(r.toString() + "-" + c.toString());
-			tile.innerText = "2";
-			tile.classList.add("x2");
-			found = true;
-		}
-	}
+        if (board[r][c] == 0) {
+            board[r][c] = 2;
+            let tile = document.getElementById(r.toString() + "-" + c.toString());
+            tile.innerText = "2";
+            tile.classList.add("x2");
+            found = true;
+        }
+    }
 }
 
 function checkWin() {
-    for(let r=0; r<rows; r++) {
-        for(let c=0; c<columns; c++) {
-            if(board[r][c] == 2048 && is2048Exist == false){
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
+            if (board[r][c] == 2048 && is2048Exist == false) {
                 const messageElement = document.getElementById("message");
                 messageElement.style.display = "block";
                 messageElement.innerText = `You Win! Congratulations! The Game Will Reload in ${countdown}`;
-            
+
                 const countdownInterval = setInterval(() => {
                     countdown--;
                     if (countdown <= 0) {
@@ -286,15 +280,15 @@ function checkWin() {
 }
 
 function hasLost() {
-    for(let r=0; r<rows; r++) {
-        for(let c=0; c<columns; c++) {
-            if(board[r][c] === 0) {
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
+            if (board[r][c] === 0) {
                 return false;
             }
 
             const currentTile = board[r][c];
 
-			if (
+            if (
                 r > 0 && board[r - 1][c] === currentTile ||
                 r < rows - 1 && board[r + 1][c] === currentTile ||
                 c > 0 && board[r][c - 1] === currentTile ||
@@ -308,22 +302,28 @@ function hasLost() {
 }
 
 function restartGame() {
-    for(let r=0; r<rows; r++) {
-        for(let c=0; c<columns; c++) {
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
             board[r][c] = 0;
         }
     }
 
-    setTwo(); 
+    setTwo();
 }
 
 function reload() {
     location.reload();
 }
 
+document.addEventListener('touchstart', handleTouchStart, false);
+document.addEventListener('touchmove', handleTouchMove, false);
+
+let xDown = null;
+let yDown = null;
+
 function handleTouchStart(evt) {
-    xDown = evt.touches[0].clientX;                                      
-    yDown = evt.touches[0].clientY;                                      
+    xDown = evt.touches[0].clientX;
+    yDown = evt.touches[0].clientY;
 };
 
 function handleTouchMove(evt) {
@@ -331,43 +331,47 @@ function handleTouchMove(evt) {
         return;
     }
 
-    let xUp = evt.touches[0].clientX;                                    
+    let xUp = evt.touches[0].clientX;
     let yUp = evt.touches[0].clientY;
 
     let xDiff = xDown - xUp;
     let yDiff = yDown - yUp;
 
-    if (Math.abs(xDiff) > Math.abs(yDiff)) { 
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {
         if (xDiff > 0) {
-            swipeLeft();
+            slideLeft();
+            setTwo();
         } else {
-            swipeRight();
-        }                       
+            slideRight();
+            setTwo();
+        }
     } else {
         if (yDiff > 0) {
-            swipeUp();
+            slideUp();
+            setTwo();
         } else {
-            swipeDown();
-        }                                                                 
+            slideDown();
+            setTwo();
+        }
     }
 
     xDown = null;
-    yDown = null;                                             
+    yDown = null;
 };
 
 function swipeLeft() {
-    for(let r = 0; r < rows; r++) {
+    for (let r = 0; r < rows; r++) {
         let row = board[r];
         let originalRow = row.slice();
         row = slide(row);
         board[r] = row;
 
-        for(let c = 0; c < columns; c++) {
+        for (let c = 0; c < columns; c++) {
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
 
-            if(originalRow[c] !== num && num !== 0) {
+            if (originalRow[c] !== num && num !== 0) {
                 tile.style.animation = "slide-from-right 0.3s";
                 setTimeout(() => {
                     tile.style.animation = "";
@@ -378,7 +382,7 @@ function swipeLeft() {
 }
 
 function swipeDown() {
-    for(let c = 0; c < columns; c++) {
+    for (let c = 0; c < columns; c++) {
         let col = [board[0][c], board[1][c], board[2][c], board[3][c]];
         let originalCol = col.slice();
         col.reverse();
@@ -386,19 +390,19 @@ function swipeDown() {
         col.reverse();
 
         let changeIndices = [];
-        for(let r = 0; r < rows; r++) {
-            if(originalCol[r] !== col[r]) {
+        for (let r = 0; r < rows; r++) {
+            if (originalCol[r] !== col[r]) {
                 changeIndices.push(r);
             }
         }
 
-        for(let r = 0; r < rows; r++) {
+        for (let r = 0; r < rows; r++) {
             board[r][c] = col[r];
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
 
-            if(changeIndices.includes(r) && num !== 0) {
+            if (changeIndices.includes(r) && num !== 0) {
                 tile.style.animation = "slide-from-top 0.3s";
 
                 setTimeout(() => {
@@ -410,7 +414,7 @@ function swipeDown() {
 }
 
 function swipeRight() {
-    for(let r = 0; r < rows; r++) {
+    for (let r = 0; r < rows; r++) {
         let row = board[r];
         let originalRow = row.slice();
         row.reverse();
@@ -418,12 +422,12 @@ function swipeRight() {
         row.reverse();
         board[r] = row;
 
-        for(let c = 0; c < columns; c++) {
+        for (let c = 0; c < columns; c++) {
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
 
-            if(originalRow[c] !== num && num !== 0) {
+            if (originalRow[c] !== num && num !== 0) {
                 tile.style.animation = "slide-from-left 0.3s";
 
                 setTimeout(() => {
@@ -435,25 +439,25 @@ function swipeRight() {
 }
 
 function swipeUp() {
-    for(let c = 0; c < columns; c++) {
+    for (let c = 0; c < columns; c++) {
         let col = [board[0][c], board[1][c], board[2][c], board[3][c]];
         let originalCol = col.slice();
         col = slide(col);
 
         let changeIndices = [];
-        for(let r = 0; r < rows; r++) {
-            if(originalCol[r] !== col[r]) {
+        for (let r = 0; r < rows; r++) {
+            if (originalCol[r] !== col[r]) {
                 changeIndices.push(r);
             }
         }
 
-        for(let r = 0; r < rows; r++) {
+        for (let r = 0; r < rows; r++) {
             board[r][c] = col[r];
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
 
-            if(changeIndices.includes(r) && num !== 0) {
+            if (changeIndices.includes(r) && num !== 0) {
                 tile.style.animation = "slide-from-bottom 0.3s";
 
                 setTimeout(() => {
