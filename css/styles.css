@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Pacifico&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Truculenta:opsz,wght@12..72,100..900&display=swap');
+
+/* Color Pallete */
+:root {
+    --primary: #a70000;
+    --secondary: #ff0000;
+    --tertiary: #ff5252;
+    --quarternary: #ff7b7b;
+    --quintary: #ffbaba;
+    --black: #000;
+    --white: #fff;
+}
+
+body {
+    font-family: 'Nunito';
+    text-align: center;
+    background-color: var(--quintary);
+    color: var(--primary);
+}
+
+/* =========================================
+    # Header
+=========================================== */
+header .container{
+    background-color: var(--primary);
+    color: var(--white);
+    height: 100%;
+    padding: 10px;
+}
+
+header .container p {
+    font-size: 1.2em;
+}
+
+h1{
+    font-size: 5em;
+    color: var(--white);
+    text-shadow:
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+     -1px 1px 0 #000,
+      1px 1px 0 #000;
+}
+hr {
+    max-width: 480px;
+}
+
+/* Container */
+.container h1{
+    border-bottom: 1px solid black;
+}
+/* =========================================
+    # Board
+=========================================== */
+#board {
+    width: 400px;
+    height: 400px;
+    background-color: var(--primary);
+    border: 6px solid var(--tertiary);
+    margin: 0 auto;
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.tile {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    border: 5px solid var(--primary);
+    background-color: var(--quarternary);
+    font-size: 25px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.x2 {
+    background-color: #eee4da;
+    color: var(--primary);
+}
+
+.x4 {
+    background-color:  #ece0ca;
+    color: var(--primary);
+}
+
+.x8 {
+    background-color: #f4b17a;
+    color: var(--primary);
+}
+
+.x16 {
+    background-color: #f95975;
+    color: var(--white);
+}
+
+.x32 {
+    background-color: #f57c5f;
+    color: var(--primary);
+}
+
+.x64 {
+    background-color: #f65d3b;
+    color: var(--white);
+}
+
+.x128 {
+    background-color: #edce71;
+    color: var(--primary);
+}
+
+.x256 {
+    background-color: #edcc63;
+    color: var(--primary);
+}
+
+.x512 {
+    background-color: #edc651;
+    color: var(--primary);
+}
+
+.x1024 {
+    background-color: #eec744;
+    color: var(--primary);
+}
+
+.x2048 {
+    background-color: #fe3d3d;
+    color: var(--white);
+}
+
+.x4096 {
+    background-color: #ff2020;
+    color: var(--white);
+}
+
+.x8192 {
+    background-color: var(--black);
+    color: var(--white);
+}
+/* =========================================
+    # Animations
+    # Used during sliding
+=========================================== */
+@keyframes slide-from-right {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-from-left {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-from-top {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-from-bottom {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
