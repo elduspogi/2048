@@ -4,15 +4,20 @@ let rows = 4;
 let columns = 4;
 let message;
 let countdown = 5;
-
+const messageElement = document.getElementById("message");
+messageElement.style.display = "none";
 let is2048Exist = false;
 
 function setGame() {
     board = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        // [2, 4, 2, 4],
+        // [4, 2, 4, 2],
+        // [2, 4, 2, 4],
+        // [4, 2, 4, 2]
+        [0,0,0,0],
+        [0,0,0,0],
+        [0,0,0,0],
+        [0,0,0,0]
     ];
 
     for (let r = 0; r < rows; r++) {
@@ -55,16 +60,18 @@ function handleSlide(e) {
     e.preventDefault();
 
     if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.code)) {
-        if (e.code == "ArrowLeft") {
+        e.preventDefault;
+        
+        if (e.code == "ArrowLeft" && canMoveLeft() == true) {
             slideLeft();
             setTwo();
-        } else if (e.code == "ArrowDown") {
+        } else if (e.code == "ArrowDown" && canMoveDown() == true) {
             slideDown();
             setTwo();
-        } else if (e.code == "ArrowRight") {
+        } else if (e.code == "ArrowRight" && canMoveRight() == true) {
             slideRight();
             setTwo();
-        } else {
+        } else if (e.code == "ArrowUp" && canMoveUp() == true) {
             slideUp();
             setTwo();
         }
@@ -74,9 +81,8 @@ function handleSlide(e) {
     checkWin();
 
     if (hasLost() == true) {
-        const messageElement = document.getElementById("message");
         messageElement.style.display = "block";
-        messageElement.innerText = `Game Over! You Lost The Game! The Game Will Reload in ${countdown} seconds`;
+        messageElement.innerText = `Game Over! You Lost The Game! The Game Will Reload in ${countdown}.`;
 
         const countdownInterval = setInterval(() => {
             countdown--;
@@ -84,7 +90,7 @@ function handleSlide(e) {
                 clearInterval(countdownInterval);
                 reload();
             } else {
-                messageElement.innerText = `Game Over! You Lost The Game! The Game Will Reload in ${countdown} seconds`;
+                messageElement.innerText = `Game Over! You Lost The Game! The Game Will Reload in ${countdown}.`;
             }
         }, 1000);
     }
@@ -315,155 +321,114 @@ function reload() {
     location.reload();
 }
 
-document.addEventListener('touchstart', handleTouchStart, false);
-document.addEventListener('touchmove', handleTouchMove, false);
+document.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+});
 
-let xDown = null;
-let yDown = null;
-
-function handleTouchStart(evt) {
-    xDown = evt.touches[0].clientX;
-    yDown = evt.touches[0].clientY;
-};
-
-function handleTouchMove(evt) {
-    if (!xDown || !yDown) {
+document.addEventListener('touchend', (e) => {
+    if(!e.target.className.includes("tile")) {
         return;
-    }
+    };
 
-    let xUp = evt.touches[0].clientX;
-    let yUp = evt.touches[0].clientY;
+    let diffX = startX - e.changedTouches[0].clientX;
+    let diffY = startY - e.changedTouches[0].clientY;
 
-    let xDiff = xDown - xUp;
-    let yDiff = yDown - yUp;
-
-    if (Math.abs(xDiff) > Math.abs(yDiff)) {
-        if (xDiff > 0) {
+    if(Math.abs(diffX) > Math.abs(diffY)) {
+        if(diffX > 0) {
             slideLeft();
             setTwo();
-        } else {
+        } else if(diffX < 0) {
             slideRight();
             setTwo();
         }
     } else {
-        if (yDiff > 0) {
+        if(diffY > 0 ) {
             slideUp();
             setTwo();
-        } else {
+        } else if(diffY < 0) {
             slideDown();
             setTwo();
         }
+    };
+
+    document.getElementById("score").textContent = score;
+    checkWin();
+
+    if (hasLost() == true) {
+        const messageElement = document.getElementById("message");
+        messageElement.style.display = "block";
+        messageElement.innerText = `Game Over! You Lost The Game! The Game Will Reload in ${countdown} seconds`;
+
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                reload();
+            } else {
+                messageElement.innerText = `Game Over! You Lost The Game! The Game Will Reload in ${countdown} seconds`;
+            }
+        }, 1000);
     }
+});
 
-    xDown = null;
-    yDown = null;
-};
+document.addEventListener('touchmove', (e)=> {
+	if(!e.target.className.includes('tile')) {
+		return;
+	}
 
-function swipeLeft() {
-    for (let r = 0; r < rows; r++) {
-        let row = board[r];
-        let originalRow = row.slice();
-        row = slide(row);
-        board[r] = row;
+	e.preventDefault();
+}, {passive: false});
 
-        for (let c = 0; c < columns; c++) {
-            let tile = document.getElementById(r.toString() + "-" + c.toString());
-            let num = board[r][c];
-            updateTile(tile, num);
 
-            if (originalRow[c] !== num && num !== 0) {
-                tile.style.animation = "slide-from-right 0.3s";
-                setTimeout(() => {
-                    tile.style.animation = "";
-                }, 300);
+function canMoveLeft() {
+    for(let r = 0; r < rows; r++) {
+        for(let c = 0; c < columns; c++) {
+            if(board[r][c] !== 0) {
+                if(board[r][c - 1] === 0 || board[r][c - 1] === board[r][c]) {
+                    return true;
+                }
             }
         }
     }
+    return false;
 }
 
-function swipeDown() {
-    for (let c = 0; c < columns; c++) {
-        let col = [board[0][c], board[1][c], board[2][c], board[3][c]];
-        let originalCol = col.slice();
-        col.reverse();
-        col = slide(col);
-        col.reverse();
-
-        let changeIndices = [];
-        for (let r = 0; r < rows; r++) {
-            if (originalCol[r] !== col[r]) {
-                changeIndices.push(r);
-            }
-        }
-
-        for (let r = 0; r < rows; r++) {
-            board[r][c] = col[r];
-            let tile = document.getElementById(r.toString() + "-" + c.toString());
-            let num = board[r][c];
-            updateTile(tile, num);
-
-            if (changeIndices.includes(r) && num !== 0) {
-                tile.style.animation = "slide-from-top 0.3s";
-
-                setTimeout(() => {
-                    tile.style.animation = "";
-                }, 300);
+function canMoveRight() {
+    for(let r = 0; r < rows; r++) {
+        for(let c = 0; c < columns; c++) {
+            if(board[r][c] !== 0) {
+                if(board[r][c + 1] === 0 || board[r][c + 1] === board[r][c]) {
+                    return true;
+                }
             }
         }
     }
+    return false;
 }
 
-function swipeRight() {
-    for (let r = 0; r < rows; r++) {
-        let row = board[r];
-        let originalRow = row.slice();
-        row.reverse();
-        row = slide(row);
-        row.reverse();
-        board[r] = row;
-
-        for (let c = 0; c < columns; c++) {
-            let tile = document.getElementById(r.toString() + "-" + c.toString());
-            let num = board[r][c];
-            updateTile(tile, num);
-
-            if (originalRow[c] !== num && num !== 0) {
-                tile.style.animation = "slide-from-left 0.3s";
-
-                setTimeout(() => {
-                    tile.style.animation = "";
-                }, 300);
+function canMoveUp() {
+    for(let c = 0; c < columns; c++) {
+        for(let r = 1; r<rows; r++) {
+            if(board[r][c] !== 0) {
+                if(board[r - 1][c] === 0 || board[r - 1][c] === board[r][c]) {
+                    return true;
+                }
             }
         }
     }
+    return false;
 }
 
-function swipeUp() {
-    for (let c = 0; c < columns; c++) {
-        let col = [board[0][c], board[1][c], board[2][c], board[3][c]];
-        let originalCol = col.slice();
-        col = slide(col);
-
-        let changeIndices = [];
-        for (let r = 0; r < rows; r++) {
-            if (originalCol[r] !== col[r]) {
-                changeIndices.push(r);
-            }
-        }
-
-        for (let r = 0; r < rows; r++) {
-            board[r][c] = col[r];
-            let tile = document.getElementById(r.toString() + "-" + c.toString());
-            let num = board[r][c];
-            updateTile(tile, num);
-
-            if (changeIndices.includes(r) && num !== 0) {
-                tile.style.animation = "slide-from-bottom 0.3s";
-
-                setTimeout(() => {
-                    tile.style.animation = "";
-                }, 300);
+function canMoveDown() {
+    for(let c = 0; c < columns; c++) {
+        for(let r = 0; r < rows; r++) {
+            if(board[r][c] !== 0) {
+                if(board[r + 1][c] === 0 || board[r + 1][c] === board[r][c]) {
+                    return true;
+                }
             }
         }
     }
+    return false;
 }

@@ -18,6 +18,65 @@ body {
     color: var(--primary);
 }
 
+.container {
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+.header-container {
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+    width: 400px;
+    margin: 0 auto;
+}
+
+.score-container, .share-button-container, .new-game-container {
+    margin-left: 5px;
+    margin-right: 5px;
+    display: flex;
+    flex-direction: column;
+
+    width: 50%;
+    height: 57px;
+    font-weight: 600;
+}
+
+.share-button-container a{
+    color: var(--primary);
+}
+
+.score-container {
+    align-items: flex-start;
+}
+
+.share-button-container {
+    align-items: flex-end;
+}
+
+#score {
+    font-weight: bold;
+    font-size: 26px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: end;
+}
+/* =========================================
+    # New Game Button
+=========================================== */
+#newGameButton {
+    border: 1px solid var(--primary);
+    background-color: var(--white);
+    border-radius: 5px;
+    font-size: 1.1em;
+    padding: 10px 10px;
+    color: var(--primary);
+}
+
+#newGameButton:hover {
+    background-color: var(--primary);
+    color: var(--white);
+}
 /* =========================================
     # Header
 =========================================== */
@@ -25,7 +84,7 @@ header .container{
     background-color: var(--primary);
     color: var(--white);
     height: 100%;
-    padding: 10px;
+    padding: 1px;
 }
 
 header .container p {
@@ -33,21 +92,21 @@ header .container p {
 }
 
 h1{
-    font-size: 5em;
-    color: var(--white);
+    font-size: 4em;
+    color: var(--quarternary);
     text-shadow:
-    -1px -1px 0 #000,  
-     1px -1px 0 #000,
-     -1px 1px 0 #000,
-      1px 1px 0 #000;
+    -1px -1px 0 var(--primary),  
+     1px -1px 0 var(--primary),
+     -1px 1px 0 var(--primary),
+      1px 1px 0 var(--primary);
 }
 hr {
     max-width: 480px;
 }
 
 /* Container */
-.container h1{
-    border-bottom: 1px solid black;
+.container .container p{
+    border-bottom: 1px solid var(--primary);
 }
 /* =========================================
     # Board
@@ -69,12 +128,13 @@ hr {
     height: 90px;
     border: 5px solid var(--primary);
     background-color: var(--quarternary);
-    font-size: 25px;
+    font-size: 30px;
     font-weight: bold;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
+    padding: 0;
 }
 
 .x2 {
@@ -178,5 +238,33 @@ hr {
     }
     100% {
         transform: translateY(0);
+    }
+}
+
+/* =========================================
+    # Message
+=========================================== */
+#message{
+    background-color: var(--primary);
+    border: 5px solid var(--quarternary);
+    color: var(--white);
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+/* =========================================
+    # Media Queries
+=========================================== */
+@media (max-width: 415px) {
+    #board {
+        margin-top: 8px;
+        width: 90vw;
+        max-width: 400px;
+        max-height: 400px;
+    }
+
+    .tile {
+        box-sizing: border-box;
+        width: 25%;
+        height: 25%;
     }
 }
